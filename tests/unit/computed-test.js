@@ -1,5 +1,5 @@
 import Ember from "ember";
-import computed, { readOnly } from "ember-computed-decorators"; // jshint ignore:line
+import computed, { readOnly, equal, gt, or } from "ember-computed-decorators"; // jshint ignore:line
 import { module, test } from "qunit";
 
 const { get, set } = Ember;
@@ -8,6 +8,24 @@ module('decorated computed with dependent keys', {
   beforeEach() {
 
   }
+});
+
+test('passes dependent keys into function as arguments', function(assert) {
+  var obj = {
+    first: null,
+    second: null,
+    third: 123,
+
+    /* jshint ignore:start */
+    @computed(gt(or('first', or('second', 'third')), 12), equal('third', 12))
+    /* jshint ignore:end */
+    result(gt, equal) {
+      assert.strictEqual(gt, true);
+      assert.strictEqual(equal, false);
+    }
+  };
+
+  get(obj, 'result');
 });
 
 test('passes dependent keys into function as arguments', function(assert) {

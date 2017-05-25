@@ -12,6 +12,14 @@ export default function handleDescriptor(target, key, desc, params = []) {
       }
 
       let value = extractValue(desc);
+
+      params = params.map(param => {
+        if (typeof param === 'function') {
+          param = extractValue(param(target, key, desc));
+        }
+        return param;
+      });
+
       return computed(...params, value);
     }
   };
